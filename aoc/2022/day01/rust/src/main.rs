@@ -14,6 +14,13 @@ fn main() {
         g.sort();
 
         println!("Highest is {}", g[last_index]);
+        let mut sum_of_top_three = 0;
+
+        for i in 0..3 {
+            sum_of_top_three += g[last_index - i];
+        }
+
+        println!("Sum of top three {sum_of_top_three}");
     } else {
         eprintln!("Error loading file...");
         process::exit(0);
