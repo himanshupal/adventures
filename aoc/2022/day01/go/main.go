@@ -33,5 +33,5 @@ func main() {
 		}
 	}
 
-	log.Println("Higest is", largest)
+	log.Println("Highest is", largest)
 }
