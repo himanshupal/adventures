@@ -1,21 +1,17 @@
-use std::{collections::HashMap, fs};
+use std::fs;
 
 fn main() {
-    let index = vec!["X", "Y", "Z"];
-    let key_map = HashMap::from([("A", index[0]), ("B", index[1]), ("C", index[2])]);
-
-    fn get_index(v: Vec<&str>, s: &str) -> Option<usize> {
-        return v.iter().position(|&ch| &ch == &s);
-    }
+    let m_index = vec!["X", "Y", "Z"];
+    let o_index = vec!["A", "B", "C"];
 
     if let Ok(data) = fs::read_to_string("../input.txt") {
-        let sum: usize = data
+        let sums = data
             .lines()
             .map(|chars| {
                 let letters = chars.split(' ').collect::<Vec<&str>>();
                 let (o, m) = (letters[0], letters[1]);
-                let o_idx = get_index(index.clone(), key_map.get(o).unwrap().clone()).unwrap();
-                let m_idx = get_index(index.clone(), m).unwrap();
+                let o_idx = get_index(o_index.clone(), o).unwrap();
+                let m_idx = get_index(m_index.clone(), m).unwrap();
 
                 let res = if m_idx == 0 && o_idx == 2 {
                     /* 'w' */
@@ -34,10 +30,42 @@ fn main() {
                     (m_idx + 1) + 3
                 };
 
-                return res;
-            })
-            .sum();
+                let part2 = if m == "X" {
+                    /* 'l' */
+                    if o_idx == 0 {
+                        (2 + 1) + 0
+                    } else {
+                        (o_idx - 1 + 1) + 0
+                    }
+                } else if m == "Y" {
+                    /* 'd' */
+                    (o_idx + 1) + 3
+                } else if m == "Z" {
+                    /* 'w' */
+                    if o_idx == 2 {
+                        (0 + 1) + 6
+                    } else {
+                        (o_idx + 1 + 1) + 6
+                    }
+                } else {
+                    0
+                };
 
-        println!("Final score: {sum}")
+                return (res, part2);
+            })
+            .collect::<Vec<(usize, usize)>>();
+
+        let (sum1, sum2) = sums
+            // .iter()
+            // .copied()
+            .into_iter()
+            .reduce(|(p_sum1, p_sum2), (sum1, sum2)| (p_sum1 + sum1, p_sum2 + sum2))
+            .unwrap();
+
+        println!("Final score: {sum1}, Part two: {sum2}")
     }
+}
+
+fn get_index(v: Vec<&str>, s: &str) -> Option<usize> {
+    return v.iter().position(|&ch| &ch == &s);
 }
