@@ -26,7 +26,7 @@ fn main() {
     let mut sum_part2 = 0;
 
     loop {
-        let Some(broken_lines) = it.next() else {break};
+        let Some(broken_lines) = it.next() else { break };
 
         let first_line = broken_lines.get(0).unwrap();
         let second_line = broken_lines.get(1).unwrap();
