@@ -30,6 +30,8 @@ fn main() {
         };
     });
 
+    let mut stacks_copied = stacks.clone();
+
     moves.iter().for_each(|(count, from, to)| {
         for _ in 0..count.to_owned() {
             let top = stacks[(from.to_owned() - 1) as usize].pop().unwrap();
@@ -41,5 +43,24 @@ fn main() {
         string.push(*stack.last().unwrap());
     });
 
-    println!("{string}");
+    println!("Day01: {string}");
+
+    moves.iter().for_each(|(count, from, to)| {
+        let mut temp = Vec::new();
+        for _ in 0..count.to_owned() {
+            temp.push(stacks_copied[(from.to_owned() - 1) as usize].pop().unwrap())
+        }
+        temp.reverse();
+        temp.iter().for_each(|c| {
+            stacks_copied[(to.to_owned() - 1) as usize].push(*c);
+        });
+    });
+
+    let mut string = String::new();
+
+    stacks_copied.iter().for_each(|stack| {
+        string.push(*stack.last().unwrap());
+    });
+
+    println!("Day02: {string}");
 }
