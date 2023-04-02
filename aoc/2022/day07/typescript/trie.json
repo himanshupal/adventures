@@ -1,0 +1,38 @@
+{
+  "folders": [
+    {
+      "name": "a",
+      "folders": [
+        {
+          "name": "e",
+          "folders": [],
+          "files": [{ "size": 584, "name": "i" }],
+          "size": 584
+        }
+      ],
+      "files": [
+        { "size": 29116, "name": "f" },
+        { "size": 2557, "name": "g" },
+        { "size": 62596, "name": "h.lst" }
+      ],
+      "size": 94853
+    },
+    {
+      "name": "d",
+      "folders": [],
+      "files": [
+        { "size": 4060174, "name": "j" },
+        { "size": 8033020, "name": "d.log" },
+        { "size": 5626152, "name": "d.ext" },
+        { "size": 7214296, "name": "k" }
+      ],
+      "size": 24933642
+    }
+  ],
+  "files": [
+    { "size": 14848514, "name": "b.txt" },
+    { "size": 8504156, "name": "c.dat" }
+  ],
+  "name": "/",
+  "size": 48381165
+}
