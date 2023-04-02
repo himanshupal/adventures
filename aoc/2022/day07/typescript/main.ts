@@ -11,10 +11,10 @@ interface Directory {
   size: number;
 }
 
-const day07_01 = async () => {
+const day07 = async () => {
   const file = await Deno.readTextFile("../input.txt");
 
-  let root: Directory | undefined = {
+  let root: Directory = {
     folders: [],
     files: [],
     name: "/",
@@ -54,13 +54,13 @@ const day07_01 = async () => {
   }
 
   // Fix the structure
-  while (root?.name !== "/") root = root?.parent;
+  while (root.name !== "/" && root.parent) root = root.parent;
 
   // Update size information
   root = updateSize(root);
 
   // Export data for visualization; if needed
-  // Deno.writeTextFile("trie.json", JSON.stringify(root, _replacer));
+  await Deno.writeTextFile("trie.json", JSON.stringify(root, _replacer));
 
   console.log({ part_01: part01Solution(root, 1e5) });
 };
@@ -92,17 +92,11 @@ function getSize(data: Array<{ size: number }>) {
 }
 
 function updateSize(node: Directory) {
-  if (node.folders.length) {
-    node.size += getSize(node.folders.map((f) => updateSize(f)));
-  }
-
-  if (node.files.length) {
-    node.size += getSize(node.files);
-  }
-
+  node.size += getSize(node.folders.map((f) => updateSize(f)));
+  node.size += getSize(node.files);
   return node;
 }
 
 if (import.meta.main) {
-  day07_01();
+  day07();
 }
