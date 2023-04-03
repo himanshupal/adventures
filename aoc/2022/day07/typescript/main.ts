@@ -11,6 +11,11 @@ interface Directory {
   size: number;
 }
 
+const DISK_SIZE = 7e7;
+const MIN_SPACE = 3e7;
+
+let spaceLeft = DISK_SIZE;
+
 const day07 = async () => {
   const file = await Deno.readTextFile("../input.txt");
 
@@ -59,10 +64,16 @@ const day07 = async () => {
   // Update size information
   root = updateSize(root);
 
+  // Update space left on device after knowing root size
+  spaceLeft = DISK_SIZE - root.size;
+
   // Export data for visualization; if needed
   await Deno.writeTextFile("trie.json", JSON.stringify(root, _replacer));
 
-  console.log({ part_01: part01Solution(root, 1e5) });
+  console.log({
+    part_01: part01Solution(root, 1e5),
+    part_02: part02Solution(root, root.size),
+  });
 };
 
 const _replacer = (() => {
@@ -78,20 +89,24 @@ const _replacer = (() => {
 
 function part01Solution(node: Directory, size: number): number {
   const limitSize = (value: number) => (value <= size ? value : 0);
-
-  if (node.folders.length)
-    return node.folders.reduce((p, c) => {
-      return p + part01Solution(c, size) + limitSize(c.size);
-    }, 0);
-
-  return 0;
+  return node.folders.reduce((p, c) => {
+    return p + part01Solution(c, size) + limitSize(c.size);
+  }, 0);
 }
 
-function getSize(data: Array<{ size: number }>) {
-  return data.reduce((p, c) => p + c.size, 0);
+function part02Solution(node: Directory, lastSize: number): number {
+  const getNextSize = (value: number, acc: number) => {
+    return value <= lastSize && value + spaceLeft >= MIN_SPACE ? value : acc;
+  };
+  return node.folders.reduce((p, c) => {
+    return part02Solution(c, getNextSize(c.size, p));
+  }, lastSize);
 }
 
 function updateSize(node: Directory) {
+  const getSize = (data: Array<{ size: number }>) => {
+    return data.reduce((p, c) => p + c.size, 0);
+  };
   node.size += getSize(node.folders.map((f) => updateSize(f)));
   node.size += getSize(node.files);
   return node;
