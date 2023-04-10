@@ -94,6 +94,8 @@ fn main() {
         }
     });
 
+    // _draw(&visited);
+
     println!("part_01: {:?}", visited.len());
 }
 
@@ -113,4 +115,23 @@ fn is_adjacent(rope: &Rope) -> bool {
         || hx == tx + 1 && hy == ty - 1
         || hx == tx + 1 && hy == ty
         || hx == tx + 1 && hy == ty + 1
+}
+
+fn _draw(visited: &HashSet<Position>) {
+    // These values are here from trial & error, though they can be found using some kinda accumulator in the primary function
+    // The addition in x & y pos is to cover for negative values since array indexes can't be negative
+
+    let mut grid = vec![vec!['.'; 281]; 260];
+
+    visited.iter().for_each(|pos| {
+        grid[(pos.x + 29) as usize][(pos.y + 46) as usize] =
+            if pos.x == 0 && pos.y == 0 { 'S' } else { '#' };
+    });
+
+    grid.reverse();
+
+    grid.iter().for_each(|row| {
+        row.iter().for_each(|col| print!("{col}"));
+        println!();
+    });
 }
