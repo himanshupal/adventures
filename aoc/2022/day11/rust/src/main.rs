@@ -51,7 +51,7 @@ fn solve(mut monkeys: Vec<Monkey>, is_part2: bool) -> u64 {
 
                 // println!("Worry: {worry}");
 
-                if worry.clone() % monkey.test_against == 0 {
+                if worry % monkey.test_against == 0 {
                     // println!("Throwing to: {}", monkey.throw_to.0);
                     monkeys[monkey.throw_to.0 as usize].worry_levels.push(worry);
                     monkeys[monkey.throw_to.0 as usize].inspected_count += 1;
