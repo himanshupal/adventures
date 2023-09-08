@@ -1,6 +1,6 @@
 use core::panic;
 use regex::{Captures, Regex};
-use std::fs;
+use std::{error::Error, fs};
 
 #[derive(Debug, Clone)]
 struct Monkey {
@@ -92,9 +92,8 @@ fn main() {
     println!("part_02: {:?}", solve(monkeys.clone(), true));
 }
 
-fn get_parsed_data(file_path: &str) -> Result<Vec<Monkey>, ()> {
-    let Ok(data) = fs::read_to_string(file_path) else { return Err(()) };
-
+fn get_parsed_data(file_path: &str) -> Result<Vec<Monkey>, Box<dyn Error>> {
+    let data = fs::read_to_string(file_path)?;
     let mut monkeys = vec![];
 
     data.lines().enumerate().step_by(7).for_each(|(line, _)| {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/big"
 	"os"
 	"regexp"
 	"strconv"
@@ -10,15 +11,16 @@ import (
 
 type Monkey struct {
 	Name           string
-	TestAgainst    uint32
-	ThrowTo        [2]uint32
-	InspectedCount uint32
-	WorryLevels    []uint32
+	TestAgainst    uint64
+	ThrowTo        [2]uint64
+	InspectedCount uint64
+	WorryLevels    []big.Int
 	Operations     [2]string
 }
 
+// Not working correctly; use rust code for correct implementation
 func main() {
-	data, err := os.ReadFile("../_input.txt")
+	data, err := os.ReadFile("../input.txt")
 	if err != nil {
 		panic("Error reading file")
 	}
@@ -26,6 +28,7 @@ func main() {
 	var r = regexp.MustCompile(`\d+|\+|\*|(\d+|old)$`)
 	var lines = strings.SplitN(string(data), "\n", -1)
 	var monkeys = make([]Monkey, 0)
+	var limit int = 10000
 
 	for i := 0; i < len(lines)/7; i++ {
 		name := r.FindAllString(lines[i*7+0], -1)
@@ -38,39 +41,45 @@ func main() {
 		monkeys = append(monkeys, Monkey{
 			Name:           name[0],
 			TestAgainst:    toUint32(testAgainst[0]),
-			InspectedCount: uint32(len(worryLevels)),
-			WorryLevels:    stringArrayToUint32Array(worryLevels),
+			InspectedCount: uint64(len(worryLevels)),
+			WorryLevels:    stringArrayToBigIntArray(worryLevels),
 			Operations:     [2]string{operations[0], operations[1]},
-			ThrowTo:        [2]uint32{toUint32(caseTrue[0]), toUint32(caseFalse[0])},
+			ThrowTo:        [2]uint64{toUint32(caseTrue[0]), toUint32(caseFalse[0])},
 		})
 	}
 
-	for i := 1; i <= 20; i++ {
-		for i := 0; i < len(monkeys); i++ {
-			monkey := monkeys[i]
+	for i := 1; i <= limit; i++ {
+		for i, monkey := range monkeys {
 
 			for _, w := range monkey.WorryLevels {
+				var val big.Int
+
 				v, err := strconv.Atoi(monkey.Operations[1])
 				if err != nil {
-					v = int(w)
+					val = w
+				} else {
+					val = *big.NewInt(int64(v))
 				}
 
-				var worry uint32
+				var worry big.Int
 
 				switch monkey.Operations[0] {
 				case "*":
-					worry = uint32(v) * w
+					worry.Set(val.Mul(&val, &w))
 				case "+":
-					worry = uint32(v) + w
+					worry.Set(val.Add(&val, &w))
 				default:
 					panic("Unknown operator")
 				}
 
-				worry /= 3
+				// worry.Div(&worry, big.NewInt(3))
 
-				// fmt.Println("Worry:", worry)
+				var worryCopy big.Int
+				worryCopy.Set(&worry)
 
-				if worry%monkey.TestAgainst == 0 {
+				// fmt.Println("Worry:", worry.Int64())
+
+				if worryCopy.Rem(&worryCopy, big.NewInt(int64(monkey.TestAgainst))).Cmp(big.NewInt(0)) == 0 {
 					monkeys[monkey.ThrowTo[0]].WorryLevels = append(monkeys[monkey.ThrowTo[0]].WorryLevels, worry)
 					monkeys[monkey.ThrowTo[0]].InspectedCount += 1
 					// println("Throwing to monkey", monkey.ThrowTo[0])
@@ -81,28 +90,31 @@ func main() {
 				}
 
 				monkeys[i].WorryLevels = monkeys[i].WorryLevels[1:]
+
 			}
 		}
 
-		if i == 20 {
-			for i, monkey := range monkeys {
-				monkeys[i].InspectedCount -= uint32(len(monkey.WorryLevels))
+		if i == limit /* || i%100 == 0 || i%20 == 0 */ {
+			for m, monkey := range monkeys {
+				monkeys[m].InspectedCount -= uint64(len(monkey.WorryLevels))
+				// fmt.Println("Monkey", monkey.Name, "has", monkey.InspectedCount, "inspected values at", i)
 			}
 		}
 	}
 
-	var inspectedCounts []uint32
+	var inspectedCounts []uint64
 
 	for _, v := range monkeys {
 		inspectedCounts = append(inspectedCounts, v.InspectedCount)
 	}
 
-	fmt.Println("part_01:", productOfMaxTwo(inspectedCounts))
+	fmt.Println("Inspected counts:", inspectedCounts)
+	fmt.Println("part_02:", productOfMaxTwo(inspectedCounts))
 }
 
-func productOfMaxTwo(values []uint32) uint32 {
-	var max uint32 = 0
-	var secondMax uint32 = 0
+func productOfMaxTwo[T uint64](values []T) T {
+	var max T = 0
+	var secondMax T = 0
 
 	for _, value := range values {
 		if value > max {
@@ -113,21 +125,22 @@ func productOfMaxTwo(values []uint32) uint32 {
 		}
 	}
 
+	println("Max two:", max, secondMax)
 	return max * secondMax
 }
 
-func toUint32(value string) uint32 {
+func toUint32(value string) uint64 {
 	num, err := strconv.Atoi(value)
 	if err != nil {
 		panic("Couldn't parse number")
 	}
-	return uint32(num)
+	return uint64(num)
 }
 
-func stringArrayToUint32Array(arr []string) []uint32 {
-	var returnArray = []uint32{}
+func stringArrayToBigIntArray(arr []string) []big.Int {
+	var returnArray = []big.Int{}
 	for _, v := range arr {
-		returnArray = append(returnArray, toUint32(v))
+		returnArray = append(returnArray, *big.NewInt(int64(toUint32(v))))
 	}
 	return returnArray
 }
