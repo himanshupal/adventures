@@ -1,8 +1,9 @@
-#[allow(unused)]
+#![allow(unused)]
+
 mod p11;
-#[allow(unused)]
 mod p12;
+mod p17;
 
 fn main() {
-    p11::largest_product_in_a_grid();
+    p17::letter_count_sum(1000);
 }
