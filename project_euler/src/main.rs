@@ -3,7 +3,8 @@
 mod p11;
 mod p12;
 mod p17;
+mod p19;
 
 fn main() {
-    p17::letter_count_sum(1000);
+    p19::counting_sundays();
 }

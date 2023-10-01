@@ -37,8 +37,8 @@ fn get_three_char_count(n: usize) -> usize {
 fn get_count(n: usize) -> usize {
     match n {
         1000 => 11,
-        n if n / 100 > 0 => get_three_char_count(n),
-        n if n / 10 > 0 => get_two_char_count(n),
+        x if x / 100 > 0 => get_three_char_count(n),
+        x if x / 10 > 0 => get_two_char_count(n),
         _ => get_single_char_count(n),
     }
 }
