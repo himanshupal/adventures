@@ -4,7 +4,8 @@ mod p11;
 mod p12;
 mod p17;
 mod p19;
+mod p22;
 
 fn main() {
-    p19::counting_sundays();
+    p22::names_scores();
 }

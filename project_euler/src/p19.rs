@@ -90,8 +90,7 @@ pub fn counting_sundays() {
     let mut count = 0;
 
     for year in 1901..=2000 {
-        let year_start_on = starting_day_for_year(year);
-        starting_days_for_months(year, year_start_on)
+        starting_days_for_months(year, starting_day_for_year(year))
             .iter()
             .for_each(|starting_day_for_month| {
                 if starting_day_for_month == &Day::Sunday {
