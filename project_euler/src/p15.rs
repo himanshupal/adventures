@@ -1,10 +1,11 @@
 use std::time::Instant;
 
 fn move_ahead(rows: u64, columns: u64) -> u64 {
-    if rows > 0 && columns > 0 {
-        move_ahead(rows - 1, columns) + move_ahead(rows, columns - 1)
-    } else {
-        1
+    match (rows, columns) {
+        x if x.0 > 0 && x.1 > 0 => move_ahead(rows - 1, columns) + move_ahead(rows, columns - 1),
+        x if x.0 > 0 => move_ahead(rows - 1, columns),
+        x if x.1 > 0 => move_ahead(rows, columns - 1),
+        _ => 1,
     }
 }
 

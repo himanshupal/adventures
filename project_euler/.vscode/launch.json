@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug",
+      "program": "${workspaceFolder}/target/debug/project_euler",
+      "cargo": {
+        "args": ["build", "--bin=project_euler", "--package=project_euler"],
+        "filter": {
+          "name": "project_euler",
+          "kind": "bin"
+        }
+      },
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}
