@@ -1,31 +1,22 @@
-use std::time::Instant;
+use std::{collections::BTreeMap, time::Instant};
 
-fn all_factors_sum(number: usize) -> usize {
-    (1..=number / 2)
-        .fold(vec![], |mut p, c| {
-            if number % c == 0 {
-                p.push(c);
-            }
-            p
-        })
-        .iter()
-        .sum()
-}
+use crate::utils::get_factors_sum_cached;
 
 pub fn amicable_numbers() {
     let now = Instant::now();
     let mut amicables = vec![];
+    let cache = &mut BTreeMap::new();
 
     for n in 1..10000 {
-        let first_sum = all_factors_sum(n);
-        if n != first_sum && n == all_factors_sum(first_sum) {
+        let first_sum = get_factors_sum_cached(n, cache);
+        if n != first_sum && n == get_factors_sum_cached(first_sum, cache) {
             amicables.push(n);
         }
     }
 
     println!(
-        "21: Found after {} seconds: {}",
-        now.elapsed().as_secs(),
+        "21: Found after {} micorseconds: {}",
+        now.elapsed().as_micros(),
         amicables.iter().sum::<usize>()
     )
 }

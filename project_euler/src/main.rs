@@ -8,7 +8,10 @@ mod p18;
 mod p19;
 mod p21;
 mod p22;
+mod p23;
+
+mod utils;
 
 fn main() {
-    p18::max_path_sum();
+    p23::non_abundant_sums();
 }
