@@ -9,9 +9,10 @@ mod p19;
 mod p21;
 mod p22;
 mod p23;
+mod p24;
 
 mod utils;
 
 fn main() {
-    p23::non_abundant_sums();
+    p24::lexographic_permutations()
 }
