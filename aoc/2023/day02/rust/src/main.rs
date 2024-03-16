@@ -22,8 +22,7 @@ fn part1(data: &String) -> usize {
                 .map(|set| set.split([',']).map(|game| game.trim()).collect())
                 .collect::<Vec<Vec<&str>>>();
 
-            let mut is_bad = false;
-            'outer: for set in sets.iter() {
+            for set in sets.iter() {
                 for game in set.iter() {
                     let mut splitted = game.split_whitespace();
                     let count: i32 = splitted.next().unwrap().trim().parse().unwrap();
@@ -31,18 +30,13 @@ fn part1(data: &String) -> usize {
 
                     if let Some(limit) = limits.get(color) {
                         if &count > limit {
-                            is_bad = true;
-                            break 'outer;
+                            return None;
                         }
                     }
                 }
             }
 
-            if !is_bad {
-                Some(index + 1)
-            } else {
-                None
-            }
+            Some(index + 1)
         })
         .sum()
 }
