@@ -52,6 +52,7 @@ fn main() {
         .collect();
 
     println!("Part 1: {}", part_01(&data, &values));
+    println!("Part 2: {}", part_02(&data, &values));
 }
 
 fn get_nearby_pos(x: usize, y: usize, x_limit: usize, y_limit: usize) -> Vec<(usize, usize)> {
@@ -141,4 +142,49 @@ fn part_01(data: &String, values: &Vec<HashMap<(usize, usize), usize>>) -> usize
     });
 
     parts_found.iter().map(|x| x.2).sum()
+}
+
+fn part_02(data: &String, values: &Vec<HashMap<(usize, usize), usize>>) -> usize {
+    let parts_found = data
+        .lines()
+        .enumerate()
+        .fold(vec![], |mut acc, (index, line)| {
+            for (i, char) in line.chars().enumerate() {
+                let mut parts_for_char = HashSet::new();
+
+                if char == '.' || char.is_alphanumeric() || char != '*' {
+                    continue;
+                }
+
+                for point in
+                    get_nearby_pos(index, i, line.len() - 1, data.lines().count() - 1).iter()
+                {
+                    for (index, map) in values.iter().enumerate() {
+                        if point.0 != index || map.is_empty() {
+                            continue;
+                        }
+
+                        for k in map.keys() {
+                            if point.1 >= k.0 && point.1 <= k.1 {
+                                parts_for_char.insert((index, i, map.get(&k).unwrap()));
+                            }
+                        }
+                    }
+                }
+
+                acc.push(parts_for_char);
+            }
+
+            acc
+        });
+
+    parts_found
+        .iter()
+        .filter_map(|x| {
+            if x.len() != 2 {
+                return None;
+            }
+            Some(x.iter().map(|x| x.2).product::<usize>())
+        })
+        .sum()
 }
