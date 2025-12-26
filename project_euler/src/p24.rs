@@ -2,6 +2,7 @@ use std::time::Instant;
 
 use crate::utils::factorial;
 
+/// https://stemhash.com/efficient-permutations-in-lexicographic-order
 pub fn lexographic_permutations() {
     let now = Instant::now();
 

@@ -19,20 +19,14 @@ class project_euler_utils:
         return value
 
 
+current = 0
 utils = project_euler_utils()
 
+while True:
+    if len(str(utils.fibonacci(current))) == 1000:
+        current
+        break
+    else:
+        current += 1
 
-def thousand_digit_fibonacci():
-    """Problem #25"""
-
-    current = 0
-    while True:
-        if len(str(utils.fibonacci(current))) == 1000:
-            return current
-        else:
-            current += 1
-
-
-# Function calls below this
-
-print(f"25: Found: {thousand_digit_fibonacci()}")
+print(f"25: Found: {current}")
